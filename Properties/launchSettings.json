@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GalaxyBot": {
+      "commandName": "Project",
+      "commandLineArgs": "-D"
+    }
+  }
+}
