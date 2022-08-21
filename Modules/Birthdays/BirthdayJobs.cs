@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace GalaxyBot.Modules.Birthdays
 {
-    //TODO: Make this fire on startup
     public class BirthdayJobs
     {
         private readonly GalaxyBotContext _db;
@@ -39,7 +38,7 @@ namespace GalaxyBot.Modules.Birthdays
             while (true)
             {
                 //Time when method needs to be called
-                var DailyTime = "14:59:00";
+                var DailyTime = "14:00:00";
                 var timeParts = DailyTime.Split(new char[1] { ':' });
 
                 var dateNow = DateTime.UtcNow;
@@ -55,7 +54,7 @@ namespace GalaxyBot.Modules.Birthdays
                     ts = date - dateNow;
                 }
 
-                //waits certan time and run the code
+                //waits certain time and run the code
                 var task = Task.Delay(ts).ContinueWith(async (x) =>
                 {
                     var today = DateTime.Today;

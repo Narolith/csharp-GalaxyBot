@@ -14,7 +14,7 @@ namespace GalaxyBot.Modules.Info
         /// <param name="user">The user to display information about. If null, will use the user who called the command</param>
         [RequireUserPermission(GuildPermission.ModerateMembers)]
         [SlashCommand("info", "Get information about yourself or another user")]
-        public async Task HandleInfoCommand(IUser? user = null)
+        public async Task HandleInfoCommand([Summary(description: "User to look up information on (Defaults to you if blank)")] IUser? user = null)
         {
             // Defers the interaction response until the command is finished executing
             await DeferAsync(true);

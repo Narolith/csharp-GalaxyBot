@@ -4,7 +4,6 @@ using GalaxyBot.Data;
 
 namespace GalaxyBot.Modules.Birthdays
 {
-    //TODO: Implement Birthday commands
     [Group("birthday", "Birthday commands")]
     public class SlashCommand : InteractionModuleBase<SocketInteractionContext>
     {
@@ -16,7 +15,8 @@ namespace GalaxyBot.Modules.Birthdays
         }
 
         [SlashCommand("add", "Adds or updates user's birthday.")]
-        public async Task AddBirthdayCommand(int month, int day)
+        public async Task AddBirthdayCommand([Summary(description: "Digit month of your birthday")] int month,
+                                             [Summary(description: "Digit day of your birthday")] int day)
         {
             await DeferAsync(ephemeral: true);
             var user = Context.User;
