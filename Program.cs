@@ -39,7 +39,7 @@ namespace GalaxyBot
             {
                 envConfig = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddYamlFile("configs/devConfig.yml", optional: false, reloadOnChange: true)
+                .AddYamlFile("Configs/devConfig.yml", optional: false, reloadOnChange: true)
                 .Build();
             }
             // Import production configuration from prodConfig.yml by default
@@ -47,7 +47,7 @@ namespace GalaxyBot
             {
                 envConfig = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddYamlFile("configs/prodConfig.yml", optional: false, reloadOnChange: true)
+                .AddYamlFile("Configs/prodConfig.yml", optional: false, reloadOnChange: true)
                 .Build();
             }
 
@@ -62,12 +62,12 @@ namespace GalaxyBot
                     MessageCacheSize = 1000,
                     GatewayIntents = GatewayIntents.All
                 }))
-            .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
-            .AddSingleton<InteractionHandler>()
-            .AddSingleton(x => new BirthdayJobs(
-                x.GetRequiredService<GalaxyBotContext>(),
-                x.GetRequiredService<DiscordSocketClient>(),
-                x.GetRequiredService<IConfigurationRoot>())
+                .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+                .AddSingleton<InteractionHandler>()
+                .AddSingleton(x => new BirthdayJobs(
+                    x.GetRequiredService<GalaxyBotContext>(),
+                    x.GetRequiredService<DiscordSocketClient>(),
+                    x.GetRequiredService<IConfigurationRoot>())
             );
 
             return collection.BuildServiceProvider();
@@ -95,8 +95,8 @@ namespace GalaxyBot
             new Thread(new ThreadStart(birthdayService.DailyBirthdayMessage)).Start();
 
             // Set Log Handling
-            _client.Log += async (LogMessage msg) => { await LogHandler.LogAsync(msg); };
-            slashCommands.Log += async (LogMessage msg) => { await LogHandler.LogAsync(msg); };
+            _client.Log += async (LogMessage msg) => { await LogHandler.LogConsoleAsync(msg); };
+            slashCommands.Log += async (LogMessage msg) => { await LogHandler.LogConsoleAsync(msg); };
 
             // Refresh and load slash commands when the client is ready
             _client.Ready += async () =>
@@ -114,6 +114,11 @@ namespace GalaxyBot
                     await cmd.DeleteAsync();
                 }
                 await slashCommands.RegisterCommandsToGuildAsync(ulong.Parse(envConfig["guildId"]));
+                if (guild.GetChannel(ulong.Parse(envConfig["logChannelId"])) is SocketTextChannel logChannel)
+                {
+                    _client.Log += async (LogMessage msg) => { await LogHandler.LogChannelAsync(logChannel, msg); };
+                    slashCommands.Log += async (LogMessage msg) => { await LogHandler.LogChannelAsync(logChannel, msg); };
+                }      
             };
 
             // Login and start the bot

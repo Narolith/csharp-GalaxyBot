@@ -17,9 +17,7 @@ namespace GalaxyBot.Data
 
         public GalaxyBotContext()
         {
-            var folder = Environment.SpecialFolder.LocalApplicationData;
-            var path = Environment.GetFolderPath(folder);
-            DbPath = System.IO.Path.Join(path, "GalaxyBot.db");
+            DbPath = System.IO.Path.Join(AppContext.BaseDirectory, "GalaxyBot.db");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
