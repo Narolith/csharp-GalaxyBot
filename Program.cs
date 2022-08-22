@@ -60,7 +60,7 @@ namespace GalaxyBot
                     LogLevel = LogSeverity.Info,
                     AlwaysDownloadUsers = true,
                     MessageCacheSize = 1000,
-                    GatewayIntents = GatewayIntents.All
+                    GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildPresences | GatewayIntents.GuildMessages | GatewayIntents.GuildMembers
                 }))
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionHandler>()
@@ -118,7 +118,13 @@ namespace GalaxyBot
                 {
                     _client.Log += async (LogMessage msg) => { await LogHandler.LogChannelAsync(logChannel, msg); };
                     slashCommands.Log += async (LogMessage msg) => { await LogHandler.LogChannelAsync(logChannel, msg); };
-                }      
+                }
+            };
+
+            //Use GuildPresence to allow user status query with commands.  Using this to silence Warning.
+            _client.PresenceUpdated += (SocketUser user, SocketPresence presenceBefore, SocketPresence presenceAfter) =>
+            {
+                return Task.CompletedTask;
             };
 
             // Login and start the bot
