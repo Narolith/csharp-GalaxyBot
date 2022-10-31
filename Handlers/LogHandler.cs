@@ -1,13 +1,12 @@
 using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
 
 namespace GalaxyBot.Handlers
 {
     /// <summary>
     /// Handler responsible for logging.
     /// </summary>
-    public class LogHandler
+    public static class LogHandler
     {
         public static Task LogConsoleAsync(LogMessage log)
         {
@@ -15,27 +14,16 @@ namespace GalaxyBot.Handlers
 
             var cc = Console.ForegroundColor;
 
-            switch (log.Severity)
+            Console.ForegroundColor = log.Severity switch
             {
-                case LogSeverity.Critical:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogSeverity.Error:
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    break;
-                case LogSeverity.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                case LogSeverity.Info:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-                case LogSeverity.Verbose:
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    break;
-                case LogSeverity.Debug:
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    break;
-            }
+                LogSeverity.Critical => ConsoleColor.Red,
+                LogSeverity.Error => ConsoleColor.DarkRed,
+                LogSeverity.Warning => ConsoleColor.Yellow,
+                LogSeverity.Info => ConsoleColor.White,
+                LogSeverity.Verbose => ConsoleColor.Gray,
+                LogSeverity.Debug => ConsoleColor.DarkGray,
+                _ => Console.ForegroundColor
+            };
             Console.WriteLine(logMsg);
             Console.ForegroundColor = cc;
 
@@ -51,12 +39,10 @@ namespace GalaxyBot.Handlers
                     .WithTitle($"{log.Source} [{log.Severity}]")
                     .WithDescription($"{ log.Message}\n{ log.Exception}")
                     .WithTimestamp(DateTime.UtcNow);
-                
+
                 switch (log.Severity)
                 {
                     case LogSeverity.Critical:
-                        embed.WithColor(new Color(0xFF0000));
-                        break;
                     case LogSeverity.Error:
                         embed.WithColor(new Color(0xFF0000));
                         break;
@@ -73,6 +59,7 @@ namespace GalaxyBot.Handlers
                         embed.WithColor(new Color(0x808080));
                         break;
                 }
+
                 await logChannel.SendMessageAsync(embed: embed.Build());
             });
 
