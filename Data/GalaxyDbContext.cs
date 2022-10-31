@@ -1,35 +1,35 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace GalaxyBot.Data
+namespace GalaxyBot.Data;
+
+public class GalaxyBotContext : DbContext
 {
-
-    public class GalaxyBotContext : DbContext
+    public GalaxyBotContext()
     {
-        public DbSet<User> Users => Set<User>();
-        public DbSet<Birthday> Birthdays => Set<Birthday>();
-
-        private string DbPath { get; }
-
-        public GalaxyBotContext()
-        {
-            DbPath = Path.Join(AppContext.BaseDirectory, "GalaxyBot.db");
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite($"Data Source={DbPath}");
-    }
-    
-    public abstract class User
-    {
-        public ulong UserId { get; set; }
-        public string Username { get; set; } = null!;
+        DbPath = Path.Join(AppContext.BaseDirectory, "GalaxyBot.db");
     }
 
-    public class Birthday
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Birthday> Birthdays => Set<Birthday>();
+
+    private string DbPath { get; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        public int BirthdayId { get; set; }
-        public ulong UserId { get; init; }
-        public int Day { get; set; }
-        public int Month { get; set; }
+        options.UseSqlite($"Data Source={DbPath}");
     }
+}
+
+public class User
+{
+    public ulong UserId { get; set; }
+    public string Username { get; set; } = null!;
+}
+
+public class Birthday
+{
+    public int BirthdayId { get; set; }
+    public ulong UserId { get; init; }
+    public int Day { get; set; }
+    public int Month { get; set; }
 }
