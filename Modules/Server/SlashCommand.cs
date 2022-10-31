@@ -19,8 +19,8 @@ namespace GalaxyBot.Modules.Server
                 .WithThumbnailUrl(server.IconUrl)
                 .AddField("Owner", server.Owner)
                 .AddField("Created", server.CreatedAt)
-                .AddField("Online Members", server.Users.Where(user => user.Status != UserStatus.Offline).Count())
-                .AddField("Total Members", server.Users.Count())
+                .AddField("Online Members", server.Users.Count(user => user.Status != UserStatus.Offline))
+                .AddField("Total Members", server.Users.Count)
                 .Build();
 
             await FollowupAsync(embed: embed, ephemeral: true);

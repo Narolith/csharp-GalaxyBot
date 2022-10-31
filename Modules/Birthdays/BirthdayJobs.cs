@@ -19,27 +19,25 @@ namespace GalaxyBot.Modules.Birthdays
 
             _client.UserLeft += ClearBirthday;
         }
-         
-        public async Task ClearBirthday(SocketGuild guild, SocketUser user)
+
+        private async Task ClearBirthday(SocketGuild guild, SocketUser user)
         {
             await Task.Run(() =>
             {
                 var birthday = _db.Birthdays.FirstOrDefault(b => b.UserId == user.Id);
-                if (birthday != null)
-                {
-                    _db.Birthdays.Remove(birthday);
-                    _db.SaveChanges();
-                }
+                if (birthday == null) return;
+                _db.Birthdays.Remove(birthday);
+                _db.SaveChanges();
             });
         }
 
         public void DailyBirthdayMessage()
         {
+            const string dailyTime = "14:00:00";
             while (true)
             {
                 //Time when method needs to be called
-                var DailyTime = "14:00:00";
-                var timeParts = DailyTime.Split(new char[1] { ':' });
+                var timeParts = dailyTime.Split(new[] { ':' });
 
                 var dateNow = DateTime.UtcNow;
                 var date = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day,
@@ -55,30 +53,30 @@ namespace GalaxyBot.Modules.Birthdays
                 }
 
                 //waits certain time and run the code
-                var task = Task.Delay(ts).ContinueWith(async (x) =>
+                var task = Task.Delay(ts).ContinueWith(async _ =>
                 {
                     var today = DateTime.Today;
                     var users = _db.Birthdays.Where(b => b.Month == today.Month && b.Day == today.Day).Select(b => b.UserId).ToList();
                     var guild = _client.Guilds.FirstOrDefault(g => g.Id == ulong.Parse(_envConfig["guildId"]));
                     if (guild == null)
                     {
-                        Console.Error.WriteLine("DailyBirthdayMessage -> Guild not found");
+                        await Console.Error.WriteLineAsync("DailyBirthdayMessage -> Guild not found");
                         return;
                     }
                     if (guild.Channels.FirstOrDefault(c => c.Id == guild.SystemChannel.Id) is not SocketTextChannel channel)
                     {
-                        Console.Error.WriteLine("DailyBirthdayMessage -> SystemChannel not found");
+                        await Console.Error.WriteLineAsync("DailyBirthdayMessage -> SystemChannel not found");
                         return;
                     }
-                    var galaxians = guild.Roles.FirstOrDefault(role => role.Id == ulong.Parse(_envConfig["announcementRoleId"]));
-                    if (galaxians == null)
+                    var announcementRole = guild.Roles.FirstOrDefault(role => role.Id == ulong.Parse(_envConfig["announcementRoleId"]));
+                    if (announcementRole == null)
                     {
-                        Console.Error.WriteLine("DailyBirthdayMessage -> AnnouncementRole not found");
+                        await Console.Error.WriteLineAsync("DailyBirthdayMessage -> AnnouncementRole not found");
                         return;
                     }
                     var embed = new EmbedBuilder()
                     .WithTitle("Birthdays!")
-                    .WithDescription($"{galaxians.Mention}, Please wish a happy birthday to:\n\n{string.Join("\n", users.Select(u => guild.GetUser(u).Mention))}")
+                    .WithDescription($"{announcementRole.Mention}, Please wish a happy birthday to:\n\n{string.Join("\n", users.Select(u => guild.GetUser(u).Mention))}")
                     .WithThumbnailUrl("https://i.imgur.com/2LQPTEO.png")
                     .Build();
                     
@@ -86,6 +84,8 @@ namespace GalaxyBot.Modules.Birthdays
                 });
                 task.Wait();
             }
+            // ReSharper disable once FunctionNeverReturns
+            // Birthday Job is an intentional infinite loop meant to fire off once a day 
         }
     }
 }

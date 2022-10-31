@@ -1,4 +1,3 @@
-using Discord;
 using Discord.Interactions;
 using GalaxyBot.Data;
 
@@ -30,7 +29,7 @@ namespace GalaxyBot.Modules.Birthdays
                 birthday.Month = month;
                 birthday.Day = day;
             }
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             await FollowupAsync($"Your birthday has been set to {month}/{day}.", ephemeral: true);
         }
 
@@ -44,12 +43,12 @@ namespace GalaxyBot.Modules.Birthdays
             if (birthday != null)
             {
                 _db.Birthdays.Remove(birthday);
-                _db.SaveChanges();
-                await FollowupAsync($"Your birthday has been removed.", ephemeral: true);
+                await _db.SaveChangesAsync();
+                await FollowupAsync("Your birthday has been removed.", ephemeral: true);
             }
             else
             {
-                await FollowupAsync($"You have no birthday to remove.", ephemeral: true);
+                await FollowupAsync("You have no birthday to remove.", ephemeral: true);
             }
         }
 
@@ -66,7 +65,7 @@ namespace GalaxyBot.Modules.Birthdays
             }
             else
             {
-                await FollowupAsync($"You have no birthday set.", ephemeral: true);
+                await FollowupAsync("You have no birthday set.", ephemeral: true);
             }
         }
     }
