@@ -91,8 +91,6 @@ public class BirthdayJobs
                 await channel.SendMessageAsync(embed: embed);
             });
             task.Wait();
-        }
-        // ReSharper disable once FunctionNeverReturns
-        // Birthday Job is an intentional infinite loop meant to fire off once a day 
+        } 
     }
 }
