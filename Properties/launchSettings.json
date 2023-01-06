@@ -1,8 +1,21 @@
 {
   "profiles": {
-    "GalaxyBot": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "GalaxyBotProd": {
       "commandName": "Project",
-      "commandLineArgs": "-D"
+      "commandLineArgs": "--production",
+      "environmentVariables": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "C:\\Users\\steph\\source\\repos\\Narolith\\csharp-GalaxyBot\\bin\\Debug\\net6.0\\Configs\\FirestoreProd.json"
+      }
+    },
+    "GalaxyBotDev": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "C:\\Users\\steph\\source\\repos\\Narolith\\csharp-GalaxyBot\\bin\\Debug\\net6.0\\Configs\\FirestoreDev.json"
+      }
     }
   }
 }

@@ -18,7 +18,7 @@ public class SlashCommand : InteractionModuleBase<SocketInteractionContext>
             .WithDescription(server.Description)
             .WithThumbnailUrl(server.IconUrl)
             .AddField("Owner", server.Owner)
-            .AddField("Created", server.CreatedAt)
+            .AddField("Created", server.CreatedAt.ToString("MMM dd, yyyy"))
             .AddField("Online Members", server.Users.Count(user => user.Status != UserStatus.Offline))
             .AddField("Total Members", server.Users.Count)
             .Build();
