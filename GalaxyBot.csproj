@@ -17,22 +17,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="configs\devConfig.yml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
         <None Update="Configs\FirestoreDev.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="Configs\FirestoreProd.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="configs\prodConfig.yml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Configs\devConfig.json">
+        <None Update="Configs\ConfigDev.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="Configs\prodConfig.json">
+        <None Update="Configs\ConfigProd.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

@@ -5,10 +5,10 @@
 in /Configs
 
 Two Json files that hold Discord Bot secrets:
->ConfigDev.json
+>ConfigDev.json,
 >ConfigProd.json
 
 
 Two Json files that hold Google Firestore secrets:
->FirestoreDev.json
+>FirestoreDev.json,
 >FirestoreProd.json
