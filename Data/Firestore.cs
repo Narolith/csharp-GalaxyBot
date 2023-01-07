@@ -1,5 +1,4 @@
 ﻿using Google.Cloud.Firestore;
-using Microsoft.Extensions.Configuration;
 
 namespace GalaxyBot.Data;
 
@@ -9,9 +8,9 @@ public class Firestore
     private readonly FirestoreDb _db;
     private readonly List<Gameplay> _gameplayCache = new();
 
-    public Firestore(IConfigurationRoot envConfig)
+    internal Firestore(Secrets secrets)
     {
-        _projectId = envConfig["firestoreProject"] ?? "";
+        _projectId = secrets.FirestoreProject;
         _db = FirestoreDb.Create(_projectId);
         Console.WriteLine("Created Cloud Firestore client with project ID: {0}", _projectId);
     }

@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
+using GalaxyBot.Data;
+using System.Text.Json;
 
 namespace GalaxyBot;
 
@@ -20,28 +21,21 @@ internal class Configuration
         };
     }
 
-    internal static IConfigurationRoot GetEnvironmentConfiguration(bool isProd)
+    internal static Secrets GetEnvironmentConfiguration(bool isProd)
     {
-        var configuration = new ConfigurationBuilder()
-                    .SetBasePath(AppContext.BaseDirectory);
-        try
+
+        string stream;
+        if (isProd)
         {
-            // Import configuration from prodConfig.json if production arg is passed
-            if (isProd)
-                configuration.AddJsonFile("Configs/prodConfig.json", false, true)
-                             .Build();
-            // Import production configuration from devConfig.json by default
-            else
-                configuration.AddJsonFile("Configs/devConfig.json", false, true)
-                             .Build();
+            stream = File.ReadAllText("Configs/prodConfig.json");
         }
-        catch (FileNotFoundException exception)
+        else
         {
-            Console.WriteLine(exception.Message);
-            Environment.Exit(1);
+            stream = File.ReadAllText("Configs/devConfig.json");
         }
 
-        return configuration.Build();
+        return JsonSerializer.Deserialize<Secrets>(stream) ?? new Secrets();
+
     }
 }
 
